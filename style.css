@@ -217,3 +217,12 @@ body {
 #back-btn:hover {
   color: #000000;
 }
+
+/* HUD, 입력창은 게임 실행 중일 때만 표시 */
+#hud, #input-area {
+  visibility: hidden;
+}
+body.playing #hud,
+body.playing #input-area {
+  visibility: visible;
+}

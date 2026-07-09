@@ -5,9 +5,24 @@ const scoreEl = document.getElementById("score");
 const livesEl = document.getElementById("lives");
 const levelEl = document.getElementById("level");
 const overlay = document.getElementById("overlay");
+const titleScreen = document.getElementById("title-screen");
+const difficultyScreen = document.getElementById("difficulty-screen");
 const overlayTitle = document.getElementById("overlay-title");
 const overlayMsg = document.getElementById("overlay-msg");
 const startBtn = document.getElementById("start-btn");
+const backBtn = document.getElementById("back-btn");
+const introRain = document.getElementById("intro-rain");
+
+// ===== 배경 상수 =====
+const BG_COUNT = 3; // bg1.png ~ bg3.png
+const TITLE_BG = "url('assets/title.png') center/cover no-repeat, #ffffff";
+
+// ===== 난이도 프리셋 =====
+const DIFFICULTY = {
+  easy:   { baseSpeed: 30, spawnInterval: 2.6, label: "쉬움" },
+  normal: { baseSpeed: 40, spawnInterval: 2.0, label: "보통" },
+  hard:   { baseSpeed: 60, spawnInterval: 1.3, label: "어려움" }
+};
 
 const state = {
   running: false,
@@ -16,20 +31,23 @@ const state = {
   lives: 3,
   level: 1,
   spawnTimer: 0,
-  spawnInterval: 2.0, // 초
-  baseSpeed: 40,      // px/s
+  spawnInterval: 2.0,
+  baseSpeed: 40,
+  difficulty: "normal",
   lastTime: 0
 };
 
-function resetState() {
+function resetState(difficulty) {
+  const cfg = DIFFICULTY[difficulty];
   state.running = true;
   state.words = [];
   state.score = 0;
   state.lives = 3;
   state.level = 1;
   state.spawnTimer = 0;
-  state.spawnInterval = 2.0;
-  state.baseSpeed = 40;
+  state.spawnInterval = cfg.spawnInterval;
+  state.baseSpeed = cfg.baseSpeed;
+  state.difficulty = difficulty;
   updateHUD();
 }
 
@@ -37,6 +55,15 @@ function updateHUD() {
   scoreEl.textContent = state.score;
   livesEl.textContent = state.lives;
   levelEl.textContent = state.level;
+}
+
+function setRandomGameBg() {
+  const n = Math.floor(Math.random() * BG_COUNT) + 1;
+  canvas.style.background = `url('assets/bg${n}.png') center/cover no-repeat, #ffffff`;
+}
+
+function setTitleBg() {
+  canvas.style.background = TITLE_BG;
 }
 
 function spawnWord() {
@@ -47,7 +74,6 @@ function spawnWord() {
 function findTargetWord() {
   const typed = input.value.trim();
   if (!typed) return null;
-  // 가장 아래쪽(위험한) 단어 중 접두어 일치
   const matches = state.words
     .filter(w => w.text.startsWith(typed))
     .sort((a, b) => b.y - a.y);
@@ -63,7 +89,6 @@ function handleInput() {
     state.words = state.words.filter(w => w !== target);
     input.value = "";
     updateHUD();
-    // 난이도 상승
     if (state.score > state.level * 200) {
       state.level++;
       state.spawnInterval = Math.max(0.6, state.spawnInterval - 0.15);
@@ -76,16 +101,21 @@ function handleInput() {
 function loseLife() {
   state.lives--;
   updateHUD();
-  if (state.lives <= 0) {
-    gameOver();
-  }
+  if (state.lives <= 0) gameOver();
 }
 
 function gameOver() {
   state.running = false;
+  document.body.classList.remove("playing");
+  setTitleBg();
+  // 재실행 시 인트로 애니메이션이 다시 돌지 않도록 강제 상태 고정
+  overlay.style.animation = "none";
+  overlay.style.background = "transparent";
+  if (introRain) introRain.style.display = "none";
   overlayTitle.textContent = "GAME OVER";
-  overlayMsg.textContent = `점수: ${state.score} · 레벨: ${state.level}`;
+  overlayMsg.textContent = `점수: ${state.score} · 레벨: ${state.level} · 난이도: ${DIFFICULTY[state.difficulty].label}`;
   startBtn.textContent = "다시 시작";
+  showTitleScreen();
   overlay.classList.remove("hidden");
 }
 
@@ -95,17 +125,11 @@ function update(dt) {
     state.spawnTimer = 0;
     spawnWord();
   }
-
   for (const w of state.words) w.update(dt);
-
-  // 바닥 충돌
   const survived = [];
   for (const w of state.words) {
-    if (w.y >= canvas.height - 20) {
-      loseLife();
-    } else {
-      survived.push(w);
-    }
+    if (w.y >= canvas.height - 20) loseLife();
+    else survived.push(w);
   }
   state.words = survived;
 }
@@ -113,7 +137,7 @@ function update(dt) {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 바닥선 (지면)
+  // 바닥선
   ctx.strokeStyle = "#ff6b6b";
   ctx.lineWidth = 2;
   ctx.setLineDash([8, 6]);
@@ -138,9 +162,31 @@ function loop(ts) {
   requestAnimationFrame(loop);
 }
 
+// ===== 화면 전환 =====
+function showTitleScreen() {
+  titleScreen.classList.remove("hidden");
+  difficultyScreen.classList.add("hidden");
+}
+
+function showDifficultyScreen() {
+  titleScreen.classList.add("hidden");
+  difficultyScreen.classList.remove("hidden");
+}
+
+function startGame(difficulty) {
+  overlay.classList.add("hidden");
+  document.body.classList.add("playing");
+  setRandomGameBg();
+  resetState(difficulty);
+  input.value = "";
+  input.focus();
+  state.lastTime = performance.now();
+  requestAnimationFrame(loop);
+}
+
+// ===== 이벤트 =====
 input.addEventListener("keydown", e => {
   if (e.key === "Enter") {
-    // 한글 IME 조합 중 엔터는 무시 (조합 확정용)
     if (e.isComposing) return;
     handleInput();
     input.value = "";
@@ -148,15 +194,21 @@ input.addEventListener("keydown", e => {
 });
 
 startBtn.addEventListener("click", () => {
-  overlay.classList.add("hidden");
-  resetState();
-  input.value = "";
-  input.focus();
-  state.lastTime = performance.now();
-  requestAnimationFrame(loop);
+  showDifficultyScreen();
 });
 
-// 게임 중 클릭해도 입력창 포커스 유지
+if (backBtn) {
+  backBtn.addEventListener("click", () => {
+    showTitleScreen();
+  });
+}
+
+document.querySelectorAll(".diff-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    startGame(btn.dataset.difficulty);
+  });
+});
+
 document.addEventListener("click", () => {
   if (state.running) input.focus();
 });

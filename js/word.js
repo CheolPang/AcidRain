@@ -1,7 +1,14 @@
+// 물방울 이미지 프리로드 (전역 1회)
+const waterdropImg = new Image();
+waterdropImg.src = "assets/waterdrop.png";
+
+const DROP_W = 110;  // 표시 가로
+const DROP_H = 95;   // 표시 세로 (가로가 더 넓음)
+
 class FallingWord {
   constructor(text, canvasWidth, speed) {
     this.text = text;
-    this.x = 40 + Math.random() * (canvasWidth - 120);
+    this.x = 60 + Math.random() * (canvasWidth - 120);
     this.y = 0;
     this.speed = speed;
   }
@@ -11,36 +18,28 @@ class FallingWord {
   }
 
   draw(ctx, isTarget) {
-    ctx.font = "bold 24px 'R2KDOLAppleKR', sans-serif";
+    // 물방울 이미지 (뾰족한 위쪽이 진행 방향)
+    if (waterdropImg.complete && waterdropImg.naturalWidth > 0) {
+      ctx.save();
+      if (isTarget) ctx.filter = "brightness(1.25) saturate(1.2)";
+      ctx.drawImage(
+        waterdropImg,
+        this.x - DROP_W / 2,
+        this.y - DROP_H / 2,
+        DROP_W,
+        DROP_H
+      );
+      ctx.restore();
+    }
+
+    // 텍스트 (물방울 중앙에, 흰 외곽선 + 본체색)
+    ctx.font = "bold 20px 'R2KDOLAppleKR', 'Malgun Gothic', sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-
-    // 배경 캡슐
-    const w = ctx.measureText(this.text).width + 24;
-    const h = 36;
-    ctx.fillStyle = isTarget ? "rgba(71, 238, 135, 0.95)" : "rgba(255, 255, 255, 0.7)";
-    ctx.strokeStyle = isTarget ? "#6effad" : "#2ecc71";
-    ctx.lineWidth = 2;
-    roundRect(ctx, this.x - w / 2, this.y - h / 2, w, h, 8);
-    ctx.fill();
-    ctx.stroke();
-
-    // 텍스트
-    ctx.fillStyle = isTarget ? "#ffffff" : "#000000";
-    ctx.fillText(this.text, this.x, this.y);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#ffffff";
+    ctx.strokeText(this.text, this.x, this.y + 6); // 물방울 둥근 부분 쪽으로 살짝 내려서
+    ctx.fillStyle = isTarget ? "#d62828" : "#000000";
+    ctx.fillText(this.text, this.x, this.y + 6);
   }
-}
-
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
 }
