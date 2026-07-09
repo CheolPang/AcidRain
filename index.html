@@ -18,17 +18,29 @@
     </div>
     <div id="overlay">
       <div id="intro-rain">
-        <span class="drop" style="--x: 6%;  --size: 22px; --delay: 0s;   --dur: 1.6s; --end: 690px;"></span>
-        <span class="drop" style="--x: 15%; --size: 34px; --delay: 0.5s; --dur: 2.0s; --end: 680px;"></span>
-        <span class="drop" style="--x: 24%; --size: 18px; --delay: 0.2s; --dur: 1.4s; --end: 695px;"></span>
-        <span class="drop" style="--x: 33%; --size: 40px; --delay: 0.9s; --dur: 2.3s; --end: 675px;"></span>
-        <span class="drop" style="--x: 42%; --size: 26px; --delay: 0.3s; --dur: 1.8s; --end: 688px;"></span>
-        <span class="drop" style="--x: 51%; --size: 30px; --delay: 1.1s; --dur: 2.1s; --end: 682px;"></span>
-        <span class="drop" style="--x: 60%; --size: 20px; --delay: 0.6s; --dur: 1.5s; --end: 692px;"></span>
-        <span class="drop" style="--x: 69%; --size: 36px; --delay: 0.1s; --dur: 2.2s; --end: 678px;"></span>
-        <span class="drop" style="--x: 78%; --size: 24px; --delay: 0.8s; --dur: 1.7s; --end: 689px;"></span>
-        <span class="drop" style="--x: 87%; --size: 32px; --delay: 0.4s; --dur: 1.9s; --end: 683px;"></span>
-        <span class="drop" style="--x: 94%; --size: 20px; --delay: 1.0s; --dur: 1.6s; --end: 692px;"></span>
+        <!-- 그룹 1 (t=0) -->
+        <span class="drop" style="--x: 12%; --size: 28px; --delay: 0s;   --dur: 4.2s; --stop-y: 180px;"></span>
+        <span class="drop" style="--x: 45%; --size: 34px; --delay: 0s;   --dur: 4.5s; --stop-y: 320px;"></span>
+        <span class="drop" style="--x: 78%; --size: 22px; --delay: 0s;   --dur: 4.0s; --stop-y: 110px;"></span>
+        <span class="drop" style="--x: 92%; --size: 38px; --delay: 0.05s;--dur: 4.6s; --stop-y: 260px;"></span>
+        <!-- 그룹 2 (t≈0.3) -->
+        <span class="drop" style="--x: 25%; --size: 20px; --delay: 0.3s; --dur: 4.1s; --stop-y: 420px;"></span>
+        <span class="drop" style="--x: 55%; --size: 42px; --delay: 0.3s; --dur: 4.7s; --stop-y: 90px;"></span>
+        <span class="drop" style="--x: 68%; --size: 26px; --delay: 0.35s;--dur: 4.3s; --stop-y: 360px;"></span>
+        <!-- 그룹 3 (t≈0.7) -->
+        <span class="drop" style="--x: 8%;  --size: 32px; --delay: 0.7s; --dur: 4.4s; --stop-y: 240px;"></span>
+        <span class="drop" style="--x: 38%; --size: 24px; --delay: 0.75s;--dur: 4.2s; --stop-y: 500px;"></span>
+        <span class="drop" style="--x: 62%; --size: 36px; --delay: 0.7s; --dur: 4.5s; --stop-y: 160px;"></span>
+        <span class="drop" style="--x: 85%; --size: 30px; --delay: 0.8s; --dur: 4.3s; --stop-y: 380px;"></span>
+        <!-- 그룹 4 (t≈1.2) -->
+        <span class="drop" style="--x: 18%; --size: 40px; --delay: 1.2s; --dur: 4.6s; --stop-y: 300px;"></span>
+        <span class="drop" style="--x: 50%; --size: 26px; --delay: 1.25s;--dur: 4.2s; --stop-y: 200px;"></span>
+        <span class="drop" style="--x: 72%; --size: 22px; --delay: 1.2s; --dur: 4.0s; --stop-y: 450px;"></span>
+        <span class="drop" style="--x: 95%; --size: 32px; --delay: 1.3s; --dur: 4.4s; --stop-y: 140px;"></span>
+        <!-- 그룹 5 (t≈1.7) -->
+        <span class="drop" style="--x: 30%; --size: 28px; --delay: 1.7s; --dur: 4.3s; --stop-y: 350px;"></span>
+        <span class="drop" style="--x: 58%; --size: 34px; --delay: 1.75s;--dur: 4.5s; --stop-y: 480px;"></span>
+        <span class="drop" style="--x: 82%; --size: 24px; --delay: 1.7s; --dur: 4.1s; --stop-y: 220px;"></span>
       </div>
       <div id="overlay-content">
         <div id="title-screen">
@@ -47,6 +59,17 @@
           </div>
           <button id="back-btn">← 뒤로</button>
         </div>
+      </div>
+    </div>
+    <div id="quiz-modal" class="hidden">
+      <div id="quiz-box">
+        <div id="quiz-header">
+          <span id="quiz-label">⚡ 깜짝 퀴즈</span>
+          <span id="quiz-timer">10</span>
+        </div>
+        <p id="quiz-question"></p>
+        <input type="text" id="quiz-input" autocomplete="off">
+        <p id="quiz-msg"></p>
       </div>
     </div>
   </div>

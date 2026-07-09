@@ -73,7 +73,7 @@ body {
   border-radius: 8px;
   border: none;
   z-index: 10;
-  animation: overlay-clear 1s ease 4.5s forwards;
+  animation: overlay-clear 1.2s ease 4.5s forwards;
 }
 
 @keyframes overlay-clear {
@@ -139,7 +139,7 @@ body {
   pointer-events: none;
   overflow: hidden;
   z-index: 0;
-  animation: intro-clear 1s ease 4.5s forwards;
+  animation: intro-clear 0.5s ease 6.5s forwards;
 }
 
 @keyframes intro-clear {
@@ -156,13 +156,16 @@ body {
   /* 위 뾰족, 아래 둥근 물방울: 사각형의 한 모서리를 각지게 두고 45deg 회전 */
   border-radius: 50% 0 50% 50%;
   opacity: 0;
-  animation: drop-fall var(--dur) cubic-bezier(0.5, 0.05, 0.9, 0.6) var(--delay) forwards;
+  animation: drop-fall var(--dur) linear var(--delay) forwards;
 }
 
 @keyframes drop-fall {
-  0%   { transform: translateY(0) rotate(-45deg);           opacity: 0; }
-  10%  { opacity: 1; }
-  100% { transform: translateY(var(--end)) rotate(-45deg); opacity: 1; }
+  0%   { transform: translateY(0) rotate(-45deg); opacity: 0; }
+  5%   { opacity: 1; }
+  /* 빠른 낙하 → 화면 임의 위치에 착지 */
+  30%  { transform: translateY(var(--stop-y)) rotate(-45deg); opacity: 1; }
+  /* 착지 후 아주 느리게 아래로 흘러내리며 페이드아웃 */
+  100% { transform: translateY(calc(var(--stop-y) + 60px)) rotate(-45deg); opacity: 0; }
 }
 
 #overlay-content {
@@ -226,3 +229,91 @@ body.playing #hud,
 body.playing #input-area {
   visibility: visible;
 }
+
+/* ===== 캔버스 흔들림 ===== */
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-10px, 4px); }
+  30% { transform: translate(8px, -6px); }
+  45% { transform: translate(-6px, 6px); }
+  60% { transform: translate(6px, -4px); }
+  75% { transform: translate(-4px, 2px); }
+  90% { transform: translate(3px, -2px); }
+}
+#game.shaking { animation: shake 0.45s ease; }
+
+/* ===== 깜짝 퀴즈 모달 ===== */
+#quiz-modal {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  border-radius: 8px;
+}
+#quiz-modal.hidden { display: none; }
+
+#quiz-box {
+  background: #ffffff;
+  border: 3px solid #6effad;
+  border-radius: 12px;
+  padding: 32px 40px;
+  min-width: 480px;
+  text-align: center;
+}
+
+#quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#quiz-label {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2ecc71;
+}
+
+#quiz-timer {
+  font-size: 28px;
+  font-weight: bold;
+  color: #000000;
+  min-width: 40px;
+}
+
+#quiz-timer.urgent { color: #d62828; }
+
+#quiz-question {
+  font-size: 22px;
+  color: #000000;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+#quiz-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 20px;
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  outline: none;
+  text-align: center;
+  font-family: inherit;
+}
+
+#quiz-input:focus { border-color: #6effad; }
+
+#quiz-msg {
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  min-height: 20px;
+}
+
+#quiz-msg.correct { color: #2ecc71; }
+#quiz-msg.wrong { color: #d62828; }

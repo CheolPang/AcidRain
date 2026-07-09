@@ -39,7 +39,7 @@ class FallingWord {
     ctx.lineWidth = 4;
     ctx.strokeStyle = "#ffffff";
     ctx.strokeText(this.text, this.x, this.y + 6); // 물방울 둥근 부분 쪽으로 살짝 내려서
-    ctx.fillStyle = isTarget ? "#d62828" : "#000000";
+    ctx.fillStyle = isTarget ? "#2ecc71" : "#000000";
     ctx.fillText(this.text, this.x, this.y + 6);
   }
 }

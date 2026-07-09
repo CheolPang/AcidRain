@@ -9,23 +9,50 @@ const titleScreen = document.getElementById("title-screen");
 const difficultyScreen = document.getElementById("difficulty-screen");
 const overlayTitle = document.getElementById("overlay-title");
 const overlayMsg = document.getElementById("overlay-msg");
+const overlayMsgDv = document.getElementById("overlay-msg-dv");
+const overlayMsgTt = document.getElementById("overlay-msg-tt");
 const startBtn = document.getElementById("start-btn");
 const backBtn = document.getElementById("back-btn");
 const introRain = document.getElementById("intro-rain");
 
-// ===== 배경 상수 =====
-const BG_COUNT = 3; // bg1.png ~ bg3.png
+// 퀴즈 모달
+const quizModal = document.getElementById("quiz-modal");
+const quizQuestion = document.getElementById("quiz-question");
+const quizInput = document.getElementById("quiz-input");
+const quizTimerEl = document.getElementById("quiz-timer");
+const quizMsg = document.getElementById("quiz-msg");
+
+// ===== 사운드 =====
+const sndSuccess = new Audio("assets/success.mp3");
+const sndFail = new Audio("assets/fail.mp3");
+const sndQuizSuccess = new Audio("assets/quiz_success.mp3");
+const sndGameOver = new Audio("assets/gameover.mp3");
+const sndQuiz = new Audio("assets/quiz.mp3");
+sndSuccess.volume = 0.6;
+sndFail.volume = 0.6;
+sndQuizSuccess.volume = 0.6;
+sndGameOver.volume = 0.6;
+sndQuiz.volume = 0.6;
+function playSound(a) {
+  try { a.currentTime = 0; a.play(); } catch (e) {}
+}
+
+// ===== 배경 =====
+const BG_COUNT = 3;
 const TITLE_BG = "url('assets/title.png') center/cover no-repeat, #ffffff";
 
-// ===== 난이도 프리셋 =====
+// ===== 난이도 =====
 const DIFFICULTY = {
-  easy:   { baseSpeed: 30, spawnInterval: 2.6, label: "쉬움" },
-  normal: { baseSpeed: 40, spawnInterval: 2.0, label: "보통" },
-  hard:   { baseSpeed: 60, spawnInterval: 1.3, label: "어려움" }
+  easy:   { baseSpeed: 30, spawnInterval: 2.6, quizInterval: 35, label: "쉬움" },
+  normal: { baseSpeed: 40, spawnInterval: 2.0, quizInterval: 25, label: "보통" },
+  hard:   { baseSpeed: 60, spawnInterval: 1.3, quizInterval: 18, label: "어려움" }
 };
+
+const QUIZ_TIME_LIMIT = 10;  // 초
 
 const state = {
   running: false,
+  paused: false,          // 퀴즈 진행 중이면 true
   words: [],
   score: 0,
   lives: 3,
@@ -34,12 +61,18 @@ const state = {
   spawnInterval: 2.0,
   baseSpeed: 40,
   difficulty: "normal",
-  lastTime: 0
+  lastTime: 0,
+  // 퀴즈 관련
+  quizElapsed: 0,
+  quizInterval: 25,
+  currentQuiz: null,
+  quizTimeLeft: 0
 };
 
 function resetState(difficulty) {
   const cfg = DIFFICULTY[difficulty];
   state.running = true;
+  state.paused = false;
   state.words = [];
   state.score = 0;
   state.lives = 3;
@@ -48,6 +81,10 @@ function resetState(difficulty) {
   state.spawnInterval = cfg.spawnInterval;
   state.baseSpeed = cfg.baseSpeed;
   state.difficulty = difficulty;
+  state.quizElapsed = 0;
+  state.quizInterval = cfg.quizInterval;
+  state.currentQuiz = null;
+  state.quizTimeLeft = 0;
   updateHUD();
 }
 
@@ -64,6 +101,13 @@ function setRandomGameBg() {
 
 function setTitleBg() {
   canvas.style.background = TITLE_BG;
+}
+
+function shakeCanvas() {
+  canvas.classList.remove("shaking");
+  // reflow to restart animation
+  void canvas.offsetWidth;
+  canvas.classList.add("shaking");
 }
 
 function spawnWord() {
@@ -88,6 +132,7 @@ function handleInput() {
     state.score += target.text.length * 10;
     state.words = state.words.filter(w => w !== target);
     input.value = "";
+    playSound(sndSuccess);
     updateHUD();
     if (state.score > state.level * 200) {
       state.level++;
@@ -100,26 +145,115 @@ function handleInput() {
 
 function loseLife() {
   state.lives--;
+  playSound(sndFail);
+  shakeCanvas();
   updateHUD();
   if (state.lives <= 0) gameOver();
 }
 
 function gameOver() {
   state.running = false;
+  state.paused = false;
   document.body.classList.remove("playing");
+  hideQuiz();
   setTitleBg();
-  // 재실행 시 인트로 애니메이션이 다시 돌지 않도록 강제 상태 고정
   overlay.style.animation = "none";
   overlay.style.background = "transparent";
   if (introRain) introRain.style.display = "none";
   overlayTitle.textContent = "GAME OVER";
   overlayMsg.textContent = `점수: ${state.score} · 레벨: ${state.level} · 난이도: ${DIFFICULTY[state.difficulty].label}`;
+  playSound(sndGameOver);
+  // 크레딧 숨김
+  if (overlayMsgDv) overlayMsgDv.style.display = "none";
+  if (overlayMsgTt) overlayMsgTt.style.display = "none";
   startBtn.textContent = "다시 시작";
   showTitleScreen();
   overlay.classList.remove("hidden");
 }
 
+// ===== 퀴즈 =====
+function triggerQuiz() {
+  state.paused = true;
+  state.currentQuiz = getRandomQuiz();
+  state.quizTimeLeft = QUIZ_TIME_LIMIT;
+  playSound(sndQuiz);
+  quizQuestion.textContent = state.currentQuiz.q;
+  quizInput.value = "";
+  quizMsg.textContent = "";
+  quizMsg.className = "";
+  quizTimerEl.textContent = QUIZ_TIME_LIMIT;
+  quizTimerEl.classList.remove("urgent");
+  quizModal.classList.remove("hidden");
+  quizInput.focus();
+}
+
+function hideQuiz() {
+  quizModal.classList.add("hidden");
+  state.currentQuiz = null;
+  state.paused = false;
+  input.focus();
+}
+
+function resolveQuiz(isCorrect, isTimeout) {
+  if (isCorrect) {
+    quizMsg.textContent = "정답! +100";
+    quizMsg.className = "correct";
+    state.score += 100;
+    playSound(sndQuizSuccess);
+    updateHUD();
+  } else {
+    const answer = state.currentQuiz ? state.currentQuiz.a : "";
+    quizMsg.textContent = isTimeout
+      ? `시간 초과! 정답: ${answer}`
+      : `오답! 정답: ${answer}`;
+    quizMsg.className = "wrong";
+    playSound(sndFail);
+    shakeCanvas();
+    state.lives--;
+    updateHUD();
+    if (state.lives <= 0) {
+      setTimeout(() => { hideQuiz(); gameOver(); }, 1500);
+      return;
+    }
+  }
+  setTimeout(hideQuiz, 1200);
+}
+
+function checkQuizAnswer() {
+  if (!state.currentQuiz) return;
+  const typed = quizInput.value.trim();
+  if (!typed) return;
+  const correct = typed === state.currentQuiz.a;
+  resolveQuiz(correct, false);
+}
+
+function updateQuizTimer(dt) {
+  if (!state.currentQuiz) return;
+  state.quizTimeLeft -= dt;
+  const remaining = Math.max(0, Math.ceil(state.quizTimeLeft));
+  quizTimerEl.textContent = remaining;
+  if (remaining <= 3) quizTimerEl.classList.add("urgent");
+  if (state.quizTimeLeft <= 0) {
+    resolveQuiz(false, true);
+  }
+}
+
+// ===== 게임 루프 =====
 function update(dt) {
+  // 퀴즈 진행 중이면 물방울 정지, 퀴즈 타이머만
+  if (state.paused) {
+    updateQuizTimer(dt);
+    return;
+  }
+
+  // 퀴즈 트리거 체크
+  state.quizElapsed += dt;
+  if (state.quizElapsed >= state.quizInterval) {
+    state.quizElapsed = 0;
+    triggerQuiz();
+    return;
+  }
+
   state.spawnTimer += dt;
   if (state.spawnTimer >= state.spawnInterval) {
     state.spawnTimer = 0;
@@ -136,9 +270,8 @@ function update(dt) {
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   // 바닥선
-  ctx.strokeStyle = "#ff6b6b";
+  ctx.strokeStyle = "#d62828";
   ctx.lineWidth = 2;
   ctx.setLineDash([8, 6]);
   ctx.beginPath();
@@ -193,6 +326,13 @@ input.addEventListener("keydown", e => {
   }
 });
 
+quizInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    if (e.isComposing) return;
+    checkQuizAnswer();
+  }
+});
+
 startBtn.addEventListener("click", () => {
   showDifficultyScreen();
 });
@@ -210,5 +350,5 @@ document.querySelectorAll(".diff-btn").forEach(btn => {
 });
 
 document.addEventListener("click", () => {
-  if (state.running) input.focus();
+  if (state.running && !state.paused) input.focus();
 });
