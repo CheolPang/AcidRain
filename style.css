@@ -127,3 +127,37 @@ body {
   background: #000000; 
   color: #6effad; 
 }
+/* ===== 인트로 물방울 애니메이션 ===== */
+#intro-rain {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.drop {
+  position: absolute;
+  top: -50px;
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  background: #6effad;
+  /* 위 뾰족, 아래 둥근 물방울: 사각형의 한 모서리를 각지게 두고 45deg 회전 */
+  border-radius: 50% 0 50% 50%;
+  opacity: 0;
+  animation: drop-fall var(--dur) cubic-bezier(0.5, 0.05, 0.9, 0.6) var(--delay) forwards;
+}
+
+@keyframes drop-fall {
+  0%   { transform: translateY(0) rotate(-45deg);           opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(var(--end)) rotate(-45deg); opacity: 1; }
+}
+
+#overlay-content {
+  position: relative;
+  z-index: 1;
+}
