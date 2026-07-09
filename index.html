@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>산성비</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+    <div id="hud">
+      <div>점수: <span id="score">0</span></div>
+      <div>생명: <span id="lives">3</span></div>
+      <div>레벨: <span id="level">1</span></div>
+    </div>
+    <canvas id="game" width="800" height="600"></canvas>
+    <div id="input-area">
+      <input type="text" id="typing-input" placeholder="여기에 단어를 입력하세요" autocomplete="off" autofocus>
+    </div>
+    <div id="overlay">
+      <div id="overlay-content">
+        <h1 id="overlay-title">산성비</h1>
+        <p id="overlay-msg">통합과학 1 내용을 배경으로 한 과학 학습게임</p>
+		<p id="overlay-msg-dv">Made by 이승언, 이병수</p>
+		<p id="overlay-msg-tt">Special thanks to 우도형, 성태우, 송유진</p>
+        <button id="start-btn">시작</button>
+      </div>
+    </div>
+  </div>
+  <script src="js/data.js"></script>
+  <script src="js/word.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

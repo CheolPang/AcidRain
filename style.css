@@ -1,0 +1,129 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #ffffff; 
+  color: #000000; 
+  font-family: 'R2KDOLAppleKR', 'Apple SD Gothic Neo', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+#game-container {
+  position: relative;
+  width: 800px;
+}
+
+#hud {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #f0f0f0; 
+  border-radius: 8px 8px 0 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* 1. HUD 그림자 제거 -> 흰 배경에서 #6effad가 보일 수 있도록 가독성을 위해 어두운 그린(#2ecc71 계열이나 #00cc66)으로 자동 매칭되게 하거나, 순수 #6effad를 쓰되 폰트 두께로만 깔끔하게 처리 */
+#hud span { 
+  color: #2ecc71; 
+  /* text-shadow 제거 완료 */
+}
+
+#game {
+  display: block;
+  background: linear-gradient(180deg, #ffffff 0%, #6effad 100%);
+  /* 2. 게임 좌우 아웃라인(테두리) 제거 */
+  border-left: none;
+  border-right: none;
+}
+
+#input-area {
+  padding: 12px;
+  background: #f0f0f0;
+  border-radius: 0 0 8px 8px;
+}
+
+#typing-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 20px;
+  background: #ffffff; 
+  color: #000000;      
+  /* 3. 입력창 기본 테두리를 아주 연한 회색으로 변경하여 경계만 표시 */
+  border: 1px solid #e0e0e0; 
+  border-radius: 6px;
+  outline: none;
+  text-align: center;
+}
+
+/* 4. 포커스 시 그림자(네온 효과)를 제거하고 깔끔하게 테두리 색상만 #6effad로 변경 */
+#typing-input:focus { 
+  border-color: #6effad; 
+  /* box-shadow 제거 완료 */
+}
+
+#overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #ffffff; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  /* 5. 오버레이 바깥 테두리 제거 */
+  border: none;
+  z-index: 10;
+}
+
+#overlay.hidden { display: none; }
+
+#overlay-content {
+  text-align: center;
+  padding: 40px;
+}
+
+/* 6. 오버레이 큰 제목 그림자 제거 */
+#overlay-content h1 {
+  font-size: 42px;
+  color: #6effad;
+  /* text-shadow 제거 완료 */
+  margin-bottom: 16px;
+}
+
+#overlay-content p {
+  font-size: 18px;
+  margin-bottom: 24px;
+  color: #000000;
+}
+
+#overlay-content #overlay-msg-dv {
+  font-size: 15px;
+  margin-bottom: 12px;
+  color: #000000;
+}
+
+#overlay-content #overlay-msg-tt {
+  font-size: 15px;
+  margin-bottom: 24px;
+  color: #000000;
+}
+
+#start-btn {
+  padding: 14px 40px;
+  font-size: 20px;
+  background: #6effad; 
+  color: #000000;       
+  /* 7. 버튼 아웃라인(테두리) 제거 */
+  border: none; 
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* 8. 호버 시에도 군더더기 없이 색상만 플랫하게 반전 */
+#start-btn:hover { 
+  background: #000000; 
+  color: #6effad; 
+}
