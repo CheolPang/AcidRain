@@ -18,7 +18,7 @@ class FallingWord {
     // 배경 캡슐
     const w = ctx.measureText(this.text).width + 24;
     const h = 36;
-    ctx.fillStyle = isTarget ? "rgba(110, 168, 255, 0.25)" : "rgba(255, 255, 255, 0.7)";
+    ctx.fillStyle = isTarget ? "rgba(71, 238, 135, 0.95)" : "rgba(255, 255, 255, 0.7)";
     ctx.strokeStyle = isTarget ? "#6effad" : "#2ecc71";
     ctx.lineWidth = 2;
     roundRect(ctx, this.x - w / 2, this.y - h / 2, w, h, 8);
@@ -26,7 +26,7 @@ class FallingWord {
     ctx.stroke();
 
     // 텍스트
-    ctx.fillStyle = isTarget ? "#ffffff" : "#e0e6f0";
+    ctx.fillStyle = isTarget ? "#ffffff" : "#000000";
     ctx.fillText(this.text, this.x, this.y);
   }
 }
