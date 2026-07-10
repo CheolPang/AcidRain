@@ -1,9 +1,9 @@
-// 물방울 이미지 프리로드 (전역 1회)
+
 const waterdropImg = new Image();
 waterdropImg.src = "assets/waterdrop.png";
 
-const DROP_W = 110;  // 표시 가로
-const DROP_H = 95;   // 표시 세로 (가로가 더 넓음)
+const DROP_W = 110;  
+const DROP_H = 95;   
 
 class FallingWord {
   constructor(text, canvasWidth, speed) {
@@ -18,7 +18,6 @@ class FallingWord {
   }
 
   draw(ctx, isTarget) {
-    // 물방울 이미지 (뾰족한 위쪽이 진행 방향)
     if (waterdropImg.complete && waterdropImg.naturalWidth > 0) {
       ctx.save();
       if (isTarget) ctx.filter = "brightness(1.25) saturate(1.2)";
@@ -32,13 +31,12 @@ class FallingWord {
       ctx.restore();
     }
 
-    // 텍스트 (물방울 중앙에, 흰 외곽선 + 본체색)
     ctx.font = "bold 20px 'R2KDOLAppleKR', 'Malgun Gothic', sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.lineWidth = 4;
     ctx.strokeStyle = "#ffffff";
-    ctx.strokeText(this.text, this.x, this.y + 6); // 물방울 둥근 부분 쪽으로 살짝 내려서
+    ctx.strokeText(this.text, this.x, this.y + 6); 
     ctx.fillStyle = isTarget ? "#2ecc71" : "#000000";
     ctx.fillText(this.text, this.x, this.y + 6);
   }

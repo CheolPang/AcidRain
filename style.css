@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -25,10 +27,8 @@ body {
   font-weight: bold;
 }
 
-/* 1. HUD 그림자 제거 -> 흰 배경에서 #6effad가 보일 수 있도록 가독성을 위해 어두운 그린(#2ecc71 계열이나 #00cc66)으로 자동 매칭되게 하거나, 순수 #6effad를 쓰되 폰트 두께로만 깔끔하게 처리 */
 #hud span { 
-  color: #2ecc71; 
-  /* text-shadow 제거 완료 */
+  color: #2ecc71;
 }
 
 #game {
@@ -49,18 +49,15 @@ body {
   padding: 12px;
   font-size: 20px;
   background: #ffffff; 
-  color: #000000;      
-  /* 3. 입력창 기본 테두리를 아주 연한 회색으로 변경하여 경계만 표시 */
+  color: #000000;
   border: 1px solid #e0e0e0; 
   border-radius: 6px;
   outline: none;
   text-align: center;
 }
 
-/* 4. 포커스 시 그림자(네온 효과)를 제거하고 깔끔하게 테두리 색상만 #6effad로 변경 */
-#typing-input:focus { 
-  border-color: #6effad; 
-  /* box-shadow 제거 완료 */
+#typing-input:focus {
+  border-color: #6effad;
 }
 
 #overlay {
@@ -87,11 +84,9 @@ body {
   padding: 40px;
 }
 
-/* 6. 오버레이 큰 제목 그림자 제거 */
 #overlay-content h1 {
   font-size: 42px;
   color: #6effad;
-  /* text-shadow 제거 완료 */
   margin-bottom: 16px;
 }
 
@@ -118,19 +113,21 @@ body {
   font-size: 20px;
   background: #6effad; 
   color: #000000;       
-  /* 7. 버튼 아웃라인(테두리) 제거 */
   border: none; 
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
 }
 
-/* 8. 호버 시에도 군더더기 없이 색상만 플랫하게 반전 */
 #start-btn:hover { 
-  background: #000000; 
-  color: #6effad; 
+  background: #63e79c; 
+  color: #000000; 
 }
-/* ===== 인트로 물방울 애니메이션 ===== */
+
+#start-btn:active {
+  background: #5ed893;
+}
+
 #intro-rain {
   position: absolute;
   top: 0; left: 0;
@@ -153,7 +150,6 @@ body {
   width: var(--size);
   height: var(--size);
   background: #6effad;
-  /* 위 뾰족, 아래 둥근 물방울: 사각형의 한 모서리를 각지게 두고 45deg 회전 */
   border-radius: 50% 0 50% 50%;
   opacity: 0;
   animation: drop-fall var(--dur) linear var(--delay) forwards;
@@ -162,9 +158,7 @@ body {
 @keyframes drop-fall {
   0%   { transform: translateY(0) rotate(-45deg); opacity: 0; }
   5%   { opacity: 1; }
-  /* 빠른 낙하 → 화면 임의 위치에 착지 */
   30%  { transform: translateY(var(--stop-y)) rotate(-45deg); opacity: 1; }
-  /* 착지 후 아주 느리게 아래로 흘러내리며 페이드아웃 */
   100% { transform: translateY(calc(var(--stop-y) + 60px)) rotate(-45deg); opacity: 0; }
 }
 
@@ -173,7 +167,6 @@ body {
   z-index: 1;
 }
 
-/* ===== 난이도 선택 화면 ===== */
 .hidden { display: none !important; }
 
 #difficulty-screen h1 {
@@ -207,21 +200,24 @@ body {
   color: #000000;
 }
 
+.diff-btn:active {
+  background-color: rgb(55, 230, 128);
+}
+
 #back-btn {
   padding: 8px 20px;
   font-size: 14px;
   background: transparent;
-  color: #666666;
+  color: #ffffff;
   border: none;
   cursor: pointer;
   font-family: inherit;
 }
 
 #back-btn:hover {
-  color: #000000;
+  color: #cecece;
 }
 
-/* HUD, 입력창은 게임 실행 중일 때만 표시 */
 #hud, #input-area {
   visibility: hidden;
 }
@@ -230,7 +226,6 @@ body.playing #input-area {
   visibility: visible;
 }
 
-/* ===== 캔버스 흔들림 ===== */
 @keyframes shake {
   0%, 100% { transform: translate(0, 0); }
   15% { transform: translate(-10px, 4px); }
@@ -239,10 +234,10 @@ body.playing #input-area {
   60% { transform: translate(6px, -4px); }
   75% { transform: translate(-4px, 2px); }
   90% { transform: translate(3px, -2px); }
+
 }
 #game.shaking { animation: shake 0.45s ease; }
 
-/* ===== 깜짝 퀴즈 모달 ===== */
 #quiz-modal {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -317,3 +312,17 @@ body.playing #input-area {
 
 #quiz-msg.correct { color: #2ecc71; }
 #quiz-msg.wrong { color: #d62828; }
+
+
+#overlay-content {
+  background-color: #30303080;
+  border-radius: 12px;
+}
+
+#overlay-content p {
+  color: #ffffff;
+}
+
+#overlay-msg-dv, #overlay-msg-tt {
+  color: #ffffff !important;
+}

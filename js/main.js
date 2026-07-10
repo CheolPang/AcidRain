@@ -48,11 +48,11 @@ const DIFFICULTY = {
   hard:   { baseSpeed: 60, spawnInterval: 1.3, quizInterval: 18, label: "어려움" }
 };
 
-const QUIZ_TIME_LIMIT = 10;  // 초
+const QUIZ_TIME_LIMIT = 10;
 
 const state = {
   running: false,
-  paused: false,          // 퀴즈 진행 중이면 true
+  paused: false,
   words: [],
   score: 0,
   lives: 3,
@@ -105,7 +105,6 @@ function setTitleBg() {
 
 function shakeCanvas() {
   canvas.classList.remove("shaking");
-  // reflow to restart animation
   void canvas.offsetWidth;
   canvas.classList.add("shaking");
 }
@@ -163,7 +162,6 @@ function gameOver() {
   overlayTitle.textContent = "GAME OVER";
   overlayMsg.textContent = `점수: ${state.score} · 레벨: ${state.level} · 난이도: ${DIFFICULTY[state.difficulty].label}`;
   playSound(sndGameOver);
-  // 크레딧 숨김
   if (overlayMsgDv) overlayMsgDv.style.display = "none";
   if (overlayMsgTt) overlayMsgTt.style.display = "none";
   startBtn.textContent = "다시 시작";
@@ -240,13 +238,11 @@ function updateQuizTimer(dt) {
 
 // ===== 게임 루프 =====
 function update(dt) {
-  // 퀴즈 진행 중이면 물방울 정지, 퀴즈 타이머만
   if (state.paused) {
     updateQuizTimer(dt);
     return;
   }
 
-  // 퀴즈 트리거 체크
   state.quizElapsed += dt;
   if (state.quizElapsed >= state.quizInterval) {
     state.quizElapsed = 0;
@@ -270,9 +266,8 @@ function update(dt) {
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // 바닥선
-  ctx.strokeStyle = "#d62828";
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 3;
   ctx.setLineDash([8, 6]);
   ctx.beginPath();
   ctx.moveTo(0, canvas.height - 20);
@@ -295,7 +290,6 @@ function loop(ts) {
   requestAnimationFrame(loop);
 }
 
-// ===== 화면 전환 =====
 function showTitleScreen() {
   titleScreen.classList.remove("hidden");
   difficultyScreen.classList.add("hidden");
@@ -317,7 +311,6 @@ function startGame(difficulty) {
   requestAnimationFrame(loop);
 }
 
-// ===== 이벤트 =====
 input.addEventListener("keydown", e => {
   if (e.key === "Enter") {
     if (e.isComposing) return;
