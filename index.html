@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>산성비</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./bootstrap-5.3.8-dist/css/bootstrap.min.css">
 </head>
 <body>
   <div id="game-container">
@@ -44,7 +45,7 @@
       </div>
       <div id="overlay-content">
         <div id="title-screen">
-          <h1 id="overlay-title">산성비</h1>
+          <h1 id="overlay-title"><b>산성비</b></h1>
           <p id="overlay-msg">통합과학 1 내용을 배경으로 한 과학 학습게임</p>
           <p id="overlay-msg-dv">Made by 이승언, 이병수</p>
           <p id="overlay-msg-tt">Special thanks to 우도형, 성태우, 송유진</p>
@@ -72,9 +73,63 @@
         <p id="quiz-msg"></p>
       </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="rankingModal" tabindex="-1" aria-labelledby="rankingModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="ModalTitle"><b>랭킹</b></h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="tableNav">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">닉네임</th>
+                    <th scope="col">레벨</th>
+                    <th scope="col">점수</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>이시후</td>
+                    <td>5</td>
+                    <td>1232</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>철팽</td>
+                    <td>2</td>
+                    <td>10</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>ㄹㄹㄹ</td>
+                    <td>1</td>
+                    <td>1</td>
+                  </tr>
+                </tbody>
+</table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="ranking">
+      <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#rankingModal" id="openBtn">랭킹 확인</button>
+    </footer>
   </div>
   <script src="js/data.js"></script>
   <script src="js/word.js"></script>
   <script src="js/main.js"></script>
+  <script src="./bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
 </body>
 </html>

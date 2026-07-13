@@ -326,3 +326,13 @@ body.playing #input-area {
 #overlay-msg-dv, #overlay-msg-tt {
   color: #ffffff !important;
 }
+
+.ranking {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#openBtn {
+  z-index: 10;
+}

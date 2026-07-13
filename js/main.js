@@ -1,26 +1,26 @@
-const canvas = document.getElementById("game");
+const canvas = document.querySelector("#game");
 const ctx = canvas.getContext("2d");
-const input = document.getElementById("typing-input");
-const scoreEl = document.getElementById("score");
-const livesEl = document.getElementById("lives");
-const levelEl = document.getElementById("level");
-const overlay = document.getElementById("overlay");
-const titleScreen = document.getElementById("title-screen");
-const difficultyScreen = document.getElementById("difficulty-screen");
-const overlayTitle = document.getElementById("overlay-title");
-const overlayMsg = document.getElementById("overlay-msg");
-const overlayMsgDv = document.getElementById("overlay-msg-dv");
-const overlayMsgTt = document.getElementById("overlay-msg-tt");
-const startBtn = document.getElementById("start-btn");
-const backBtn = document.getElementById("back-btn");
-const introRain = document.getElementById("intro-rain");
+const input = document.querySelector("#typing-input");
+const scoreEl = document.querySelector("#score");
+const livesEl = document.querySelector("#lives");
+const levelEl = document.querySelector("#level");
+const overlay = document.querySelector("#overlay");
+const titleScreen = document.querySelector("#title-screen");
+const difficultyScreen = document.querySelector("#difficulty-screen");
+const overlayTitle = document.querySelector("#overlay-title");
+const overlayMsg = document.querySelector("#overlay-msg");
+const overlayMsgDv = document.querySelector("#overlay-msg-dv");
+const overlayMsgTt = document.querySelector("#overlay-msg-tt");
+const startBtn = document.querySelector("#start-btn");
+const backBtn = document.querySelector("#back-btn");
+const introRain = document.querySelector("#intro-rain");
 
 // 퀴즈 모달
-const quizModal = document.getElementById("quiz-modal");
-const quizQuestion = document.getElementById("quiz-question");
-const quizInput = document.getElementById("quiz-input");
-const quizTimerEl = document.getElementById("quiz-timer");
-const quizMsg = document.getElementById("quiz-msg");
+const quizModal = document.querySelector("#quiz-modal");
+const quizQuestion = document.querySelector("#quiz-question");
+const quizInput = document.querySelector("#quiz-input");
+const quizTimerEl = document.querySelector("#quiz-timer");
+const quizMsg = document.querySelector("#quiz-msg");
 
 // ===== 사운드 =====
 const sndSuccess = new Audio("assets/success.mp3");
@@ -28,11 +28,13 @@ const sndFail = new Audio("assets/fail.mp3");
 const sndQuizSuccess = new Audio("assets/quiz_success.mp3");
 const sndGameOver = new Audio("assets/gameover.mp3");
 const sndQuiz = new Audio("assets/quiz.mp3");
+// const backgroundAudio = new Audio("");
 sndSuccess.volume = 0.6;
 sndFail.volume = 0.6;
 sndQuizSuccess.volume = 0.6;
 sndGameOver.volume = 0.6;
 sndQuiz.volume = 0.6;
+// backgroundAudio.volume = 0.3;
 function playSound(a) {
   try { a.currentTime = 0; a.play(); } catch (e) {}
 }
@@ -221,7 +223,10 @@ function checkQuizAnswer() {
   if (!state.currentQuiz) return;
   const typed = quizInput.value.trim();
   if (!typed) return;
-  const correct = typed === state.currentQuiz.a;
+  const q = state.currentQuiz;
+  const correct = [q.a, q.a2, q.a3]
+    .filter(Boolean)
+    .some(ans => ans.trim() === typed);
   resolveQuiz(correct, false);
 }
 
